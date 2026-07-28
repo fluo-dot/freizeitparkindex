@@ -3,109 +3,69 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Freizeitpark Übersicht - FreizeitparkIndex</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <title>Freizeitpark Übersicht</title>
   <style>
-    :root {
-      --primary: #0f172a;
-      --primary-accent: #2563eb;
-      --accent-green: #10b981;
-      --bg-color: #f8fafc;
-      --card-bg: #ffffff;
-      --text-main: #0f172a;
-      --text-muted: #64748b;
-      --radius-lg: 16px;
-      --radius-md: 10px;
-      --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.04);
-      --shadow-md: 0 10px 20px -5px rgba(0, 0, 0, 0.06);
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+    body { background-color: #f4f6f9; color: #333; padding: 20px; }
+
+    header { text-align: center; margin-bottom: 30px; }
+    header h1 { color: #2c3e50; font-size: 2.2rem; margin-bottom: 10px; }
+    header p { color: #666; }
+
+    .controls { max-width: 1100px; margin: 0 auto 30px auto; display: flex; gap: 15px; flex-wrap: wrap; }
+    .controls input, .controls select {
+      padding: 12px 15px; border: 1px solid #ccc; border-radius: 8px; font-size: 1rem; flex: 1; min-width: 200px;
     }
 
-    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', sans-serif; }
-    body { background-color: var(--bg-color); color: var(--text-main); min-height: 100vh; display: flex; flex-direction: column; }
-
-    nav { background: rgba(15, 23, 42, 0.95); backdrop-filter: blur(10px); position: sticky; top: 0; z-index: 100; border-bottom: 1px solid rgba(255,255,255,0.1); }
-    .nav-container { max-width: 1200px; margin: 0 auto; padding: 16px 24px; display: flex; justify-content: space-between; align-items: center; }
-    .logo { color: white; font-size: 1.3rem; font-weight: 800; text-decoration: none; display: flex; align-items: center; gap: 10px; }
-    .logo span { background: linear-gradient(135deg, #60a5fa, #2563eb); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-
-    .container { max-width: 1200px; margin: 40px auto; padding: 0 24px; flex-grow: 1; width: 100%; }
-
-    .page-header { text-align: center; margin-bottom: 32px; }
-    .page-header h1 { font-size: 2.2rem; font-weight: 800; color: var(--primary); margin-bottom: 8px; }
-    .page-header p { color: var(--text-muted); font-size: 1.05rem; }
-
-    .filter-panel {
-      background: var(--card-bg); padding: 16px; border-radius: var(--radius-lg);
-      box-shadow: var(--shadow-sm); border: 1px solid #e2e8f0; margin-bottom: 32px;
-      display: flex; gap: 16px; flex-wrap: wrap;
+    .park-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 25px;
+      max-width: 1100px;
+      margin: 0 auto;
     }
-    .filter-panel input, .filter-panel select {
-      padding: 12px 18px; border: 1px solid #cbd5e1; border-radius: var(--radius-md);
-      font-size: 0.95rem; outline: none; transition: border-color 0.2s; flex: 1; min-width: 220px;
-    }
-
-    .park-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 28px; }
 
     .park-card {
-      background: var(--card-bg); border-radius: var(--radius-lg); overflow: hidden;
-      box-shadow: var(--shadow-sm); border: 1px solid #e2e8f0; display: flex; flex-direction: column;
-      transition: transform 0.3s, box-shadow 0.3s;
+      background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+      transition: transform 0.2s, box-shadow 0.2s; display: flex; flex-direction: column;
     }
-    .park-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-md); }
+    .park-card:hover { transform: translateY(-5px); box-shadow: 0 8px 25px rgba(0,0,0,0.15); }
 
-    .park-img-container { width: 100%; height: 200px; background-color: #cbd5e1; position: relative; overflow: hidden; }
-    .park-img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s ease; }
-    .park-card:hover .park-img { transform: scale(1.04); }
-
-    .park-body { padding: 24px; display: flex; flex-direction: column; flex-grow: 1; }
-    .park-title { font-size: 1.35rem; font-weight: 700; color: var(--primary); margin-bottom: 4px; }
-    .park-location { font-size: 0.9rem; color: var(--text-muted); font-weight: 600; margin-bottom: 14px; }
-    .park-desc { font-size: 0.95rem; color: #475569; line-height: 1.5; margin-bottom: 24px; flex-grow: 1; }
+    .park-img { width: 100%; height: 180px; object-fit: cover; background-color: #e0e0e0; }
+    .park-body { padding: 20px; display: flex; flex-direction: column; flex-grow: 1; }
+    
+    .park-title { font-size: 1.4rem; color: #2c3e50; margin-bottom: 5px; }
+    .park-location { font-size: 0.9rem; color: #7f8c8d; margin-bottom: 15px; font-weight: 500; }
+    .park-desc { font-size: 0.95rem; color: #555; line-height: 1.4; margin-bottom: 20px; flex-grow: 1; }
 
     .button-group { display: flex; gap: 10px; }
     .btn {
-      flex: 1; text-align: center; padding: 10px 16px; border-radius: var(--radius-md); text-decoration: none;
-      font-weight: 700; font-size: 0.9rem; transition: all 0.2s; display: inline-flex; justify-content: center; align-items: center; gap: 6px;
+      flex: 1; text-align: center; padding: 12px; border-radius: 6px; text-decoration: none;
+      font-weight: bold; font-size: 0.95rem; transition: background-color 0.2s;
     }
-    .btn-primary { background-color: var(--primary-accent); color: white; }
-    .btn-primary:hover { background-color: #1d4ed8; }
-    .btn-secondary { background-color: #f1f5f9; color: var(--primary); border: 1px solid #cbd5e1; }
-    .btn-secondary:hover { background-color: #e2e8f0; }
+    .btn-primary { background-color: #3498db; color: white; }
+    .btn-primary:hover { background-color: #2980b9; }
 
-    .loading, .error { text-align: center; padding: 60px 20px; font-size: 1.1rem; color: var(--text-muted); }
-    footer { background-color: var(--primary); color: #64748b; text-align: center; padding: 24px; margin-top: auto; font-size: 0.9rem; }
+    .loading, .error { text-align: center; font-size: 1.2rem; color: #666; margin-top: 20px; }
+    .error { color: #e74c3c; }
   </style>
 </head>
 <body>
 
-  <nav>
-    <div class="nav-container">
-      <a href="index.html" class="logo">🎡 <span>FreizeitparkIndex</span></a>
-    </div>
-  </nav>
+  <header>
+    <h1>Freizeitparks Entdecken</h1>
+    <p>Finde Infos und Fast-Pass-Details für deine Lieblingsparks!</p>
+  </header>
 
-  <main class="container">
-    <div class="page-header">
-      <h1>Freizeitparks Entdecken</h1>
-      <p>Finde Informationen, Fast-Pass-Anleitungen und Live-Wartezeiten</p>
-    </div>
+  <div class="controls">
+    <input type="text" id="searchInput" placeholder="Parkname oder Ort suchen...">
+    <select id="countryFilter">
+      <option value="">Alle Länder</option>
+    </select>
+  </div>
 
-    <div class="filter-panel">
-      <input type="text" id="searchInput" placeholder="🔍 Parkname oder Ort suchen...">
-      <select id="countryFilter">
-        <option value="">Alle Länder</option>
-      </select>
-    </div>
-
-    <div id="loading" class="loading">Lade Park-Daten...</div>
-    <div class="park-grid" id="parkGrid"></div>
-  </main>
-
-  <footer>
-    <p>FreizeitparkIndex - Powered by <a href="https://wartezeiten.app" target="_blank" rel="noopener">Wartezeiten.APP</a></p>
-  </footer>
+  <div id="loading" class="loading">Lade Parks aus 'parks.csv'...</div>
+  <div class="park-grid" id="parkGrid"></div>
 
   <script>
     let alleParks = [];
@@ -118,53 +78,66 @@
         const result = [];
         let current = '';
         let inQuotes = false;
+
         for (let i = 0; i < line.length; i++) {
           const char = line[i];
           if (char === '"') {
-            if (inQuotes && line[i + 1] === '"') { current += '"'; i++; }
-            else { inQuotes = !inQuotes; }
+            if (inQuotes && line[i + 1] === '"') {
+              current += '"';
+              i++;
+            } else {
+              inQuotes = !inQuotes;
+            }
           } else if (char === ',' && !inQuotes) {
             result.push(current.trim());
             current = '';
-          } else { current += char; }
+          } else {
+            current += char;
+          }
         }
         result.push(current.trim());
         return result;
       }
 
       const headers = splitLine(lines[0]);
+
       return lines.slice(1).map(line => {
         const values = splitLine(line);
-        let row = {};
-        headers.forEach((h, idx) => { row[h] = values[idx] || ''; });
-        return row;
+        let rowObject = {};
+        headers.forEach((header, index) => {
+          rowObject[header] = values[index] || '';
+        });
+        return rowObject;
       });
     }
 
     async function ladeParks() {
       try {
         const response = await fetch('parks.csv');
-        if (!response.ok) throw new Error("parks.csv konnte nicht geladen werden.");
+        if (!response.ok) {
+          throw new Error('Datei parks.csv konnte nicht gefunden werden.');
+        }
         
         const csvText = await response.text();
         alleParks = parseCSV(csvText);
         
         document.getElementById('loading').style.display = 'none';
+        
         fuelleLaenderFilter(alleParks);
         zeigeParks(alleParks);
 
       } catch (error) {
-        console.error(error);
-        const loading = document.getElementById('loading');
-        loading.innerText = "Fehler beim Laden der Parkübersicht.";
-        loading.className = 'error';
+        console.error("Fehler beim Laden der CSV-Datei:", error);
+        document.getElementById('loading').innerText = "Fehler: Die Datei 'parks.csv' konnte nicht geladen werden.";
+        document.getElementById('loading').classList.add('error');
       }
     }
 
     function fuelleLaenderFilter(parks) {
-      const laender = [...new Set(parks.map(p => p.land).filter(l => l))].sort();
+      const laender = [...new Set(parks.map(p => p.land).filter(l => l))];
       const select = document.getElementById('countryFilter');
-      laender.forEach(land => {
+      
+      laender.sort().forEach(land => {
         const option = document.createElement('option');
         option.value = land;
         option.textContent = land;
@@ -177,29 +150,23 @@
       grid.innerHTML = '';
 
       if (parks.length === 0) {
-        grid.innerHTML = '<p style="grid-column: 1/-1; text-align: center; color: var(--text-muted);">Keine Freizeitparks gefunden.</p>';
+        grid.innerHTML = '<p style="grid-column: 1/-1; text-align: center;">Keine Parks gefunden.</p>';
         return;
       }
 
       parks.forEach(park => {
-        const beschreibung = park.beschreibung ? park.beschreibung.replace(/&lt;br&gt;|<br>/g, '<br>') : '';
-        
-        // Exakter Pfad zum Ordner Bilder (Großschreibung beachten)
-        const bildPfad = park.bild_datei ? `Bilder/${park.bild_datei}` : 'https://via.placeholder.com/600x400?text=Kein+Bild';
+        const beschreibungFormatted = park.beschreibung ? park.beschreibung.replace(/&lt;br&gt;|<br>/g, '<br>') : '';
 
         const card = document.createElement('div');
         card.className = 'park-card';
         card.innerHTML = `
-          <div class="park-img-container">
-            <img class="park-img" src="${bildPfad}" alt="${park.name}" onerror="this.src='https://via.placeholder.com/600x400?text=Bild+Fehlt'">
-          </div>
+          <img class="park-img" src="${park.bild_url || 'https://via.placeholder.com/400x200?text=Kein+Bild'}" alt="${park.name}">
           <div class="park-body">
             <h2 class="park-title">${park.name}</h2>
             <div class="park-location">📍 ${park.ort ? park.ort + ', ' : ''}${park.land}</div>
-            <p class="park-desc">${beschreibung}</p>
+            <p class="park-desc">${beschreibungFormatted}</p>
             <div class="button-group">
-              <a href="park-detail.html?id=${park.id}" class="btn btn-secondary">Park Info</a>
-              <a href="wartezeiten.html?id=${park.id}" class="btn btn-primary">⏱️ Wartezeiten</a>
+              <a href="park-detail.html?id=${park.id}" class="btn btn-primary">Park Info & Details</a>
             </div>
           </div>
         `;
@@ -215,6 +182,7 @@
         const matchesSearch = (park.name && park.name.toLowerCase().includes(searchTerm)) || 
                               (park.ort && park.ort.toLowerCase().includes(searchTerm));
         const matchesCountry = selectedCountry === '' || park.land === selectedCountry;
+
         return matchesSearch && matchesCountry;
       });
 
