@@ -4,82 +4,72 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Park Details - FreizeitparkIndex</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <style>
     :root {
-      --primary: #1e3c72;
-      --primary-dark: #142850;
-      --accent: #2ecc71;
-      --accent-hover: #27ae60;
-      --bg-color: #f4f6f9;
+      --primary: #0f172a;
+      --primary-accent: #2563eb;
+      --accent-green: #10b981;
+      --bg-color: #f8fafc;
       --card-bg: #ffffff;
-      --text-main: #2c3e50;
-      --text-muted: #6c757d;
-      --border-radius: 12px;
-      --shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+      --text-main: #0f172a;
+      --text-muted: #64748b;
+      --radius-lg: 16px;
+      --radius-md: 10px;
+      --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.04);
+      --shadow-md: 0 10px 25px -5px rgba(0, 0, 0, 0.08);
     }
 
-    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-    body { background-color: var(--bg-color); color: var(--text-main); line-height: 1.6; display: flex; flex-direction: column; min-height: 100vh; }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', sans-serif; }
+    body { background-color: var(--bg-color); color: var(--text-main); min-height: 100vh; display: flex; flex-direction: column; }
 
-    /* Navigation Header */
-    nav { background-color: var(--primary); padding: 15px 20px; box-shadow: 0 2px 10px rgba(0,0,0,0.15); }
-    .nav-container { max-width: 1100px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; }
-    .logo { color: white; font-size: 1.4rem; font-weight: bold; text-decoration: none; display: flex; align-items: center; gap: 8px; }
-    .btn-back { background: rgba(255,255,255,0.15); color: white; text-decoration: none; padding: 8px 16px; border-radius: 20px; font-size: 0.9rem; font-weight: 600; transition: background 0.2s; }
-    .btn-back:hover { background: rgba(255,255,255,0.3); }
+    nav { background: rgba(15, 23, 42, 0.95); backdrop-filter: blur(10px); position: sticky; top: 0; z-index: 100; border-bottom: 1px solid rgba(255,255,255,0.1); }
+    .nav-container { max-width: 1200px; margin: 0 auto; padding: 16px 24px; display: flex; justify-content: space-between; align-items: center; }
+    .logo { color: white; font-size: 1.3rem; font-weight: 800; text-decoration: none; display: flex; align-items: center; gap: 10px; }
+    .btn-back { background: rgba(255,255,255,0.1); color: white; text-decoration: none; padding: 8px 16px; border-radius: 30px; font-size: 0.88rem; font-weight: 600; transition: background 0.2s; }
+    .btn-back:hover { background: rgba(255,255,255,0.25); }
 
-    /* Main Container */
-    .container { max-width: 1100px; margin: 30px auto; padding: 0 20px; flex-grow: 1; }
+    .container { max-width: 1100px; margin: 30px auto; padding: 0 24px; flex-grow: 1; width: 100%; }
 
-    /* Park Hero Banner */
-    .hero-card { background: var(--card-bg); border-radius: var(--border-radius); overflow: hidden; box-shadow: var(--shadow); margin-bottom: 30px; }
-    .hero-img { width: 100%; height: 350px; object-fit: cover; display: block; background-color: #e0e0e0; }
-    .hero-content { padding: 30px; display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 20px; }
-    .hero-title h1 { font-size: 2.2rem; color: var(--primary-dark); margin-bottom: 5px; }
-    .hero-location { font-size: 1.1rem; color: var(--text-muted); font-weight: 500; }
+    /* Hero Card */
+    .hero-card { background: var(--card-bg); border-radius: var(--radius-lg); overflow: hidden; box-shadow: var(--shadow-md); border: 1px solid #e2e8f0; margin-bottom: 30px; }
+    .hero-img { width: 100%; height: 380px; object-fit: cover; display: block; background-color: #cbd5e1; }
+    .hero-content { padding: 32px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 20px; }
+    .hero-title h1 { font-size: 2.2rem; font-weight: 800; color: var(--primary); margin-bottom: 4px; }
+    .hero-location { font-size: 1.05rem; color: var(--text-muted); font-weight: 600; }
     
     .hero-actions { display: flex; gap: 12px; flex-wrap: wrap; }
-    .btn-action { text-decoration: none; padding: 12px 22px; border-radius: 8px; font-weight: bold; font-size: 0.95rem; transition: transform 0.2s, background 0.2s; display: inline-flex; align-items: center; gap: 8px; }
+    .btn-action { text-decoration: none; padding: 14px 24px; border-radius: var(--radius-md); font-weight: 700; font-size: 0.95rem; transition: transform 0.2s, background 0.2s; display: inline-flex; align-items: center; gap: 8px; }
     .btn-action:hover { transform: translateY(-2px); }
-    .btn-primary { background-color: var(--accent); color: white; }
-    .btn-primary:hover { background-color: var(--accent-hover); }
-    .btn-outline { border: 2px solid var(--primary); color: var(--primary); background: transparent; }
-    .btn-outline:hover { background: var(--primary); color: white; }
+    .btn-primary { background-color: var(--primary-accent); color: white; }
+    .btn-primary:hover { background-color: #1d4ed8; }
+    .btn-outline { border: 1px solid #cbd5e1; color: var(--primary); background: #f8fafc; }
+    .btn-outline:hover { background: #e2e8f0; }
 
-    /* Details Grid Layout */
+    /* Layout Grid */
     .details-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 30px; }
+    .card { background: var(--card-bg); border-radius: var(--radius-lg); padding: 28px; box-shadow: var(--shadow-sm); border: 1px solid #e2e8f0; margin-bottom: 24px; }
+    .card h2 { color: var(--primary); font-size: 1.3rem; font-weight: 700; margin-bottom: 16px; border-bottom: 2px solid #f1f5f9; padding-bottom: 12px; display: flex; align-items: center; gap: 10px; }
 
-    .card { background: var(--card-bg); border-radius: var(--border-radius); padding: 25px; box-shadow: var(--shadow); margin-bottom: 30px; }
-    .card h2 { color: var(--primary-dark); font-size: 1.4rem; margin-bottom: 15px; border-bottom: 2px solid #edf2f7; padding-bottom: 10px; display: flex; align-items: center; gap: 10px; }
-
-    .desc-text { font-size: 1.05rem; color: #4a5568; line-height: 1.7; }
+    /* Open Hours Card */
+    .opening-box { background: #eff6ff; border: 1px solid #bfdbfe; border-radius: var(--radius-md); padding: 16px; font-weight: 600; color: #1e40af; display: flex; align-items: center; gap: 12px; }
 
     /* FastPass Styling */
-    .fastpass-badge { display: inline-block; background-color: #ebf8ff; color: #2b6cb0; border: 1px solid #bee3f8; padding: 4px 12px; border-radius: 20px; font-weight: bold; font-size: 0.9rem; margin-bottom: 15px; }
-    .attraction-list { list-style: none; margin-top: 15px; display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 10px; }
-    .attraction-list li { background: #f8fafc; border-left: 4px solid var(--accent); padding: 10px 14px; border-radius: 4px; font-size: 0.95rem; font-weight: 500; color: #334155; }
+    .fastpass-badge { display: inline-block; background-color: #e0f2fe; color: #0369a1; padding: 4px 14px; border-radius: 20px; font-weight: 700; font-size: 0.85rem; margin-bottom: 14px; }
+    .attraction-list { list-style: none; margin-top: 16px; display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 10px; }
+    .attraction-list li { background: #f8fafc; border-left: 3px solid var(--primary-accent); padding: 10px 14px; border-radius: 6px; font-size: 0.9rem; font-weight: 600; color: #334155; }
 
-    /* Single Rider Box */
-    .singlerider-box { display: flex; align-items: center; gap: 15px; background: #fffaf0; border: 1px solid #feebc8; padding: 15px; border-radius: 8px; }
-    .singlerider-icon { font-size: 2rem; }
-    .singlerider-text h4 { color: #dd6b20; margin-bottom: 3px; }
-    .singlerider-text p { color: #7b341e; font-size: 0.9rem; }
-
-    /* Status & Utility */
-    .loading, .error { text-align: center; padding: 50px 20px; font-size: 1.2rem; color: var(--text-muted); }
-    .error { color: #e74c3c; }
-
-    /* Footer */
-    footer { background-color: var(--primary-dark); color: white; text-align: center; padding: 20px; margin-top: auto; font-size: 0.95rem; }
-    footer a { color: var(--accent); text-decoration: none; font-weight: bold; }
-    footer a:hover { text-decoration: underline; }
+    .loading, .error { text-align: center; padding: 60px 20px; font-size: 1.1rem; color: var(--text-muted); }
+    footer { background-color: var(--primary); color: #64748b; text-align: center; padding: 24px; margin-top: auto; font-size: 0.9rem; }
 
     @media (max-width: 850px) {
       .details-grid { grid-template-columns: 1fr; }
-      .hero-img { height: 220px; }
-      .hero-content { flex-direction: column; }
+      .hero-img { height: 240px; }
+      .hero-content { flex-direction: column; align-items: flex-start; }
       .hero-actions { width: 100%; }
-      .btn-action { flex: 1; justify-content: center; text-align: center; }
+      .btn-action { flex: 1; justify-content: center; }
     }
   </style>
 </head>
@@ -87,8 +77,8 @@
 
   <nav>
     <div class="nav-container">
-      <a href="index.html" class="logo">🎢 FreizeitparkIndex</a>
-      <a href="parks.html" class="btn-back">← Zurück zur Übersicht</a>
+      <a href="index.html" class="logo">🎡 FreizeitparkIndex</a>
+      <a href="parks.html" class="btn-back">← Zur Übersicht</a>
     </div>
   </nav>
 
@@ -97,41 +87,31 @@
     <div id="content" style="display: none;"></div>
   </main>
 
-  <footer>
+<footer>
     <p>FreizeitparkIndex - Powered by <a href="https://wartezeiten.app" target="_blank" rel="noopener">Wartezeiten.APP</a></p>
   </footer>
 
   <script>
-    // CSV Parser
     function parseCSV(text) {
       const lines = text.split(/\r?\n/).filter(line => line.trim() !== '');
       if (lines.length === 0) return [];
-
       function splitLine(line) {
-        const result = [];
-        let current = '';
-        let inQuotes = false;
+        const result = []; let current = ''; let inQuotes = false;
         for (let i = 0; i < line.length; i++) {
           const char = line[i];
           if (char === '"') {
             if (inQuotes && line[i + 1] === '"') { current += '"'; i++; }
             else { inQuotes = !inQuotes; }
           } else if (char === ',' && !inQuotes) {
-            result.push(current.trim());
-            current = '';
-          } else {
-            current += char;
-          }
+            result.push(current.trim()); current = '';
+          } else { current += char; }
         }
-        result.push(current.trim());
-        return result;
+        result.push(current.trim()); return result;
       }
-
       const headers = splitLine(lines[0]);
       return lines.slice(1).map(line => {
         const values = splitLine(line);
-        let row = {};
-        headers.forEach((h, idx) => { row[h] = values[idx] || ''; });
+        let row = {}; headers.forEach((h, idx) => { row[h] = values[idx] || ''; });
         return row;
       });
     }
@@ -141,52 +121,72 @@
       const parkId = urlParams.get('id');
 
       if (!parkId) {
-        zeigeFehler("Keine Park-ID in der URL angegeben.");
-        return;
+        zeigeFehler("Keine Park-ID angegeben."); return;
       }
 
       try {
         const response = await fetch('parks.csv');
-        if (!response.ok) throw new Error("CSV-Datei konnte nicht geladen werden.");
+        if (!response.ok) throw new Error("parks.csv konnte nicht geladen werden.");
 
         const csvText = await response.text();
         const parks = parseCSV(csvText);
         const park = parks.find(p => p.id === parkId);
 
         if (!park) {
-          zeigeFehler("Der angeforderte Freizeitpark wurde nicht gefunden.");
-          return;
+          zeigeFehler("Der Freizeitpark wurde nicht gefunden."); return;
         }
 
         renderParkDetails(park);
+        ladeOeffnungszeiten(park.api_park_id);
 
       } catch (err) {
         console.error(err);
-        zeigeFehler("Fehler beim Laden der Park-Informationen.");
+        zeigeFehler("Fehler beim Laden der Details.");
+      }
+    }
+
+    async function ladeOeffnungszeiten(uuid) {
+      if (!uuid) return;
+      try {
+        const res = await fetch('https://api.wartezeiten.app/v1/openingtimes', {
+          headers: { 'accept': 'application/json', 'park': uuid, 'language': 'de' }
+        });
+        if (res.ok) {
+          const data = await res.json();
+          const heute = Array.isArray(data) ? data[0] : (data.openingtimes ? data.openingtimes[0] : null);
+          const box = document.getElementById('openingBox');
+          if (box && heute) {
+            const von = heute.opens || heute.open || 'N/A';
+            const bis = heute.closes || heute.close || 'N/A';
+            box.innerHTML = `📅 Heute geöffnet: <strong>${von} - ${bis} Uhr</strong>`;
+          } else if (box) {
+            box.innerHTML = `📅 Heute geschlossen oder keine Öffnungszeiten bekannt.`;
+          }
+        }
+      } catch (e) {
+        console.log("Öffnungszeiten konnte nicht geladen werden.");
       }
     }
 
     function renderParkDetails(park) {
       document.title = `${park.name} - FreizeitparkIndex`;
       
-      const beschreibungFormatted = park.beschreibung ? park.beschreibung.replace(/&lt;br&gt;|<br>/g, '<br>') : 'Keine Beschreibung vorhanden.';
-      const fastpassInfoFormatted = park.fastpass_info ? park.fastpass_info.replace(/&lt;br&gt;|<br>/g, '<br>') : '';
-      
-      // FastPass Attraktionen Komma-getrennt in eine HTML-Liste umwandeln
-      let fastpassAttraktionenHTML = '';
+      const beschreibung = park.beschreibung ? park.beschreibung.replace(/&lt;br&gt;|<br>/g, '<br>') : 'Keine Beschreibung verfügbar.';
+      const fastpassInfo = park.fastpass_info ? park.fastpass_info.replace(/&lt;br&gt;|<br>/g, '<br>') : '';
+      const bildPfad = park.bild_datei ? `bilder/${park.bild_datei}` : 'https://via.placeholder.com/1000x400?text=Kein+Bild';
+
+      let fastpassHTML = '';
       if (park.fastpass_attraktionen) {
-        const liste = park.fastpass_attraktionen.split(',').map(item => item.trim()).filter(item => item !== '');
+        const liste = park.fastpass_attraktionen.split(',').map(i => i.trim()).filter(i => i !== '');
         if (liste.length > 0) {
-          fastpassAttraktionenHTML = `<ul class="attraction-list">` + 
-            liste.map(attr => `<li>🎢 ${attr}</li>`).join('') + 
-            `</ul>`;
+          fastpassHTML = `<ul class="attraction-list">` + liste.map(a => `<li>🎢 ${a}</li>`).join('') + `</ul>`;
         }
       }
 
       const contentDiv = document.getElementById('content');
       contentDiv.innerHTML = `
         <div class="hero-card">
-          <img class="hero-img" src="${park.bild_url || 'https://via.placeholder.com/1000x350?text=Kein+Bild'}" alt="${park.name}">
+          <img class="hero-img" src="${bildPfad}" alt="${park.name}" onerror="this.src='https://via.placeholder.com/1000x400?text=Bild+Fehlt'">
           <div class="hero-content">
             <div class="hero-title">
               <h1>${park.name}</h1>
@@ -202,39 +202,35 @@
         <div class="details-grid">
           <div>
             <div class="card">
+              <h2>🕒 Öffnungszeiten</h2>
+              <div class="opening-box" id="openingBox">Lade aktuelle Öffnungszeiten...</div>
+            </div>
+
+            <div class="card">
               <h2>📖 Beschreibung</h2>
-              <p class="desc-text">${beschreibungFormatted}</p>
+              <p style="color: #475569; line-height: 1.7;">${beschreibung}</p>
             </div>
 
             ${park.fastpass_name ? `
             <div class="card">
               <h2>🎟️ Fast-Pass System</h2>
               <span class="fastpass-badge">${park.fastpass_name}</span>
-              <p class="desc-text">${fastpassInfoFormatted}</p>
-              ${fastpassAttraktionenHTML ? `
-                <h3 style="margin-top: 20px; font-size: 1.05rem; color: var(--primary-dark);">Verfügbare Attraktionen:</h3>
-                ${fastpassAttraktionenHTML}
-              ` : ''}
+              <p style="color: #475569; line-height: 1.7;">${fastpassInfo}</p>
+              ${fastpassHTML ? `<h3 style="margin-top: 20px; font-size: 1rem; color: var(--primary);">Verfügbare Attraktionen:</h3>${fastpassHTML}` : ''}
             </div>
             ` : ''}
           </div>
 
           <div>
             <div class="card">
-              <h2>👤 Single Rider</h2>
-              <div class="singlerider-box">
-                <div class="singlerider-icon">🧍</div>
-                <div class="singlerider-text">
-                  <h4>Single Rider Eingänge</h4>
-                  <p>${park.singlerider ? park.singlerider : 'Keine Information verfügbar.'}</p>
-                </div>
-              </div>
+              <h2>🧍 Single Rider</h2>
+              <p style="color: #475569; font-size: 0.95rem;">${park.singlerider || 'Keine Single-Rider-Informationen vorhanden.'}</p>
             </div>
 
             <div class="card" style="text-align: center;">
-              <h2>⚡ Schnell-Zugriff</h2>
-              <p style="margin-bottom: 15px; color: var(--text-muted); font-size: 0.95rem;">Siehst du dir gerade den Park an? Prüfe die aktuellen Schlangen!</p>
-              <a href="wartezeiten.html?id=${park.id}" class="btn-action btn-primary" style="width: 100%; justify-content: center;">⏱️ Live Wartezeiten Öffnen</a>
+              <h2>⚡ Live-Analyse</h2>
+              <p style="margin-bottom: 20px; color: var(--text-muted); font-size: 0.95rem;">Prüfe jetzt die aktuellen Wartezeiten und den Attraktions-Status!</p>
+              <a href="wartezeiten.html?id=${park.id}" class="btn-action btn-primary" style="width: 100%; justify-content: center;">⏱️ Live Wartezeiten</a>
             </div>
           </div>
         </div>
@@ -246,8 +242,7 @@
 
     function zeigeFehler(msg) {
       const loading = document.getElementById('loading');
-      loading.innerText = msg;
-      loading.className = 'error';
+      loading.innerText = msg; loading.className = 'error';
     }
 
     ladeParkDetails();
