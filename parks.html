@@ -25,9 +25,18 @@
       margin: 0 auto;
     }
 
+    /* Die Karte ist jetzt ein Link */
     .park-card {
-      background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.08);
-      transition: transform 0.2s, box-shadow 0.2s; display: flex; flex-direction: column;
+      background: white; 
+      border-radius: 12px; 
+      overflow: hidden; 
+      box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+      transition: transform 0.2s, box-shadow 0.2s; 
+      display: flex; 
+      flex-direction: column;
+      text-decoration: none; /* entfernt Unterstreichung des Links */
+      color: inherit; /* Behält die Textfarben bei */
+      cursor: pointer;
     }
     .park-card:hover { transform: translateY(-5px); box-shadow: 0 8px 25px rgba(0,0,0,0.15); }
 
@@ -36,15 +45,14 @@
     
     .park-title { font-size: 1.4rem; color: #2c3e50; margin-bottom: 5px; }
     .park-location { font-size: 0.9rem; color: #7f8c8d; margin-bottom: 15px; font-weight: 500; }
-    .park-desc { font-size: 0.95rem; color: #555; line-height: 1.4; margin-bottom: 20px; flex-grow: 1; }
 
-    .button-group { display: flex; gap: 10px; }
+    .button-group { margin-top: auto; }
     .btn {
-      flex: 1; text-align: center; padding: 12px; border-radius: 6px; text-decoration: none;
+      display: block; width: 100%; text-align: center; padding: 12px; border-radius: 6px;
       font-weight: bold; font-size: 0.95rem; transition: background-color 0.2s;
     }
     .btn-primary { background-color: #3498db; color: white; }
-    .btn-primary:hover { background-color: #2980b9; }
+    .park-card:hover .btn-primary { background-color: #2980b9; }
 
     .loading, .error { text-align: center; font-size: 1.2rem; color: #666; margin-top: 20px; }
     .error { color: #e74c3c; }
@@ -178,11 +186,12 @@
       const placeholderImg = 'https://via.placeholder.com/400x200?text=Kein+Bild';
 
       parks.forEach(park => {
-        const beschreibungFormatted = park.beschreibung ? park.beschreibung.replace(/&lt;br&gt;|<br>/g, '<br>') : '';
         const bildPfad = getBildPfad(park.bild_url);
 
-        const card = document.createElement('div');
+        // Die gesamte Karte ist nun ein <a> Tag
+        const card = document.createElement('a');
         card.className = 'park-card';
+        card.href = `park-detail.html?id=${park.id}`;
         card.innerHTML = `
           <img class="park-img" 
                src="${bildPfad}" 
@@ -191,9 +200,8 @@
           <div class="park-body">
             <h2 class="park-title">${park.name}</h2>
             <div class="park-location">📍 ${park.ort ? park.ort + ', ' : ''}${park.land}</div>
-            <p class="park-desc">${beschreibungFormatted}</p>
             <div class="button-group">
-              <a href="park-detail.html?id=${park.id}" class="btn btn-primary">Park Info & Details</a>
+              <span class="btn btn-primary">Park Info & Details</span>
             </div>
           </div>
         `;
