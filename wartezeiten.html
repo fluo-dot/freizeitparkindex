@@ -199,7 +199,13 @@
 
     async function ladeApiDaten(uuid) {
       try {
-        const response = await fetch('https://api.wartezeiten.app/v1/waitingtimes', {
+        // Die eigentliche Ziel-URL
+        const targetUrl = 'https://api.wartezeiten.app/v1/waitingtimes';
+        
+        // Wir setzen einen kostenlosen CORS-Proxy davor
+        const proxyUrl = 'https://corsproxy.io/?' + encodeURIComponent(targetUrl);
+
+        const response = await fetch(proxyUrl, {
           method: 'GET',
           headers: {
             'accept': 'application/json',
@@ -228,7 +234,7 @@
 
       } catch (err) {
         console.error(err);
-        zeigeFehler("Wartezeiten konnten nicht von der API abgerufen werden.");
+        zeigeFehler("Wartezeiten konnten nicht abgerufen werden. Möglicherweise blockiert CORS die Anfrage.");
       }
     }
 
