@@ -70,53 +70,74 @@
   <script>
     let alleParks = [];
 
+    // Robuster CSV-Parser für mehrzeilige Werte in Anführungszeichen
     function parseCSV(text) {
-      const lines = text.split(/\r?\n/).filter(line => line.trim() !== '');
-      if (lines.length === 0) return [];
+      const rows = [];
+      let currentRow = [];
+      let currentCell = '';
+      let inQuotes = false;
 
-      function splitLine(line) {
-        const result = [];
-        let current = '';
-        let inQuotes = false;
+      for (let i = 0; i < text.length; i++) {
+        const char = text[i];
+        const nextChar = text[i + 1];
 
-        for (let i = 0; i < line.length; i++) {
-          const char = line[i];
-          if (char === '"') {
-            if (inQuotes && line[i + 1] === '"') {
-              current += '"';
-              i++;
-            } else {
-              inQuotes = !inQuotes;
-            }
-          } else if (char === ',' && !inQuotes) {
-            result.push(current.trim());
-            current = '';
+        if (char === '"') {
+          if (inQuotes && nextChar === '"') {
+            currentCell += '"';
+            i++;
           } else {
-            current += char;
+            inQuotes = !inQuotes;
           }
+        } else if (char === ',' && !inQuotes) {
+          currentRow.push(currentCell.trim());
+          currentCell = '';
+        } else if ((char === '\r' || char === '\n') && !inQuotes) {
+          if (char === '\r' && nextChar === '\n') i++;
+          currentRow.push(currentCell.trim());
+          if (currentRow.some(cell => cell !== '')) rows.push(currentRow);
+          currentRow = [];
+          currentCell = '';
+        } else {
+          currentCell += char;
         }
-        result.push(current.trim());
-        return result;
+      }
+      if (currentCell !== '' || currentRow.length > 0) {
+        currentRow.push(currentCell.trim());
+        if (currentRow.some(cell => cell !== '')) rows.push(currentRow);
       }
 
-      const headers = splitLine(lines[0]);
+      if (rows.length === 0) return [];
 
-      return lines.slice(1).map(line => {
-        const values = splitLine(line);
-        let rowObject = {};
+      const headers = rows[0];
+      return rows.slice(1).map(row => {
+        let obj = {};
         headers.forEach((header, index) => {
-          rowObject[header] = values[index] || '';
+          obj[header] = row[index] || '';
         });
-        return rowObject;
+        return obj;
       });
+    }
+
+    // Funktion zum Erstellen des korrekten Pfads im "Bilder/" Ordner
+    function getBildPfad(dateiname) {
+      if (!dateiname || dateiname.trim() === '') {
+        return 'https://via.placeholder.com/400x200?text=Kein+Bild';
+      }
+      dateiname = dateiname.trim();
+      
+      // Falls bereits eine vollständige URL oder 'Bilder/' enthalten ist
+      if (dateiname.startsWith('http://') || dateiname.startsWith('https://') || dateiname.startsWith('Bilder/')) {
+        return dateiname;
+      }
+      
+      // Ansonsten Ordner 'Bilder/' voranstellen
+      return `Bilder/${dateiname}`;
     }
 
     async function ladeParks() {
       try {
         const response = await fetch('parks.csv');
-        if (!response.ok) {
-          throw new Error('Datei parks.csv konnte nicht gefunden werden.');
-        }
+        if (!response.ok) throw new Error('Datei parks.csv konnte nicht gefunden werden.');
         
         const csvText = await response.text();
         alleParks = parseCSV(csvText);
@@ -154,13 +175,19 @@
         return;
       }
 
+      const placeholderImg = 'https://via.placeholder.com/400x200?text=Kein+Bild';
+
       parks.forEach(park => {
         const beschreibungFormatted = park.beschreibung ? park.beschreibung.replace(/&lt;br&gt;|<br>/g, '<br>') : '';
+        const bildPfad = getBildPfad(park.bild_url);
 
         const card = document.createElement('div');
         card.className = 'park-card';
         card.innerHTML = `
-          <img class="park-img" src="${park.bild_url || 'https://via.placeholder.com/400x200?text=Kein+Bild'}" alt="${park.name}">
+          <img class="park-img" 
+               src="${bildPfad}" 
+               alt="${park.name}" 
+               onerror="this.onerror=null; this.src='${placeholderImg}';">
           <div class="park-body">
             <h2 class="park-title">${park.name}</h2>
             <div class="park-location">📍 ${park.ort ? park.ort + ', ' : ''}${park.land}</div>
