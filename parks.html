@@ -36,7 +36,6 @@
     .page-header h1 { font-size: 2.2rem; font-weight: 800; color: var(--primary); margin-bottom: 8px; }
     .page-header p { color: var(--text-muted); font-size: 1.05rem; }
 
-    /* Filter Panel */
     .filter-panel {
       background: var(--card-bg); padding: 16px; border-radius: var(--radius-lg);
       box-shadow: var(--shadow-sm); border: 1px solid #e2e8f0; margin-bottom: 32px;
@@ -44,16 +43,11 @@
     }
     .filter-panel input, .filter-panel select {
       padding: 12px 18px; border: 1px solid #cbd5e1; border-radius: var(--radius-md);
-      font-size: 0.95rem; outline: none; transition: border-color 0.2s, box-shadow 0.2s; flex: 1; min-width: 220px;
-    }
-    .filter-panel input:focus, .filter-panel select:focus {
-      border-color: var(--primary-accent); box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+      font-size: 0.95rem; outline: none; transition: border-color 0.2s; flex: 1; min-width: 220px;
     }
 
-    /* Grid Layout */
     .park-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 28px; }
 
-    /* Card Design */
     .park-card {
       background: var(--card-bg); border-radius: var(--radius-lg); overflow: hidden;
       box-shadow: var(--shadow-sm); border: 1px solid #e2e8f0; display: flex; flex-direction: column;
@@ -61,13 +55,13 @@
     }
     .park-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-md); }
 
-    .park-img-container { width: 100%; height: 200px; background-color: #e2e8f0; position: relative; overflow: hidden; }
+    .park-img-container { width: 100%; height: 200px; background-color: #cbd5e1; position: relative; overflow: hidden; }
     .park-img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s ease; }
     .park-card:hover .park-img { transform: scale(1.04); }
 
     .park-body { padding: 24px; display: flex; flex-direction: column; flex-grow: 1; }
     .park-title { font-size: 1.35rem; font-weight: 700; color: var(--primary); margin-bottom: 4px; }
-    .park-location { font-size: 0.9rem; color: var(--text-muted); font-weight: 600; margin-bottom: 14px; display: flex; align-items: center; gap: 4px; }
+    .park-location { font-size: 0.9rem; color: var(--text-muted); font-weight: 600; margin-bottom: 14px; }
     .park-desc { font-size: 0.95rem; color: #475569; line-height: 1.5; margin-bottom: 24px; flex-grow: 1; }
 
     .button-group { display: flex; gap: 10px; }
@@ -109,7 +103,7 @@
     <div class="park-grid" id="parkGrid"></div>
   </main>
 
-<footer>
+  <footer>
     <p>FreizeitparkIndex - Powered by <a href="https://wartezeiten.app" target="_blank" rel="noopener">Wartezeiten.APP</a></p>
   </footer>
 
@@ -190,8 +184,8 @@
       parks.forEach(park => {
         const beschreibung = park.beschreibung ? park.beschreibung.replace(/&lt;br&gt;|<br>/g, '<br>') : '';
         
-        // Verweist auf den lokalen Ordner "bilder/"
-        const bildPfad = park.bild_datei ? `bilder/${park.bild_datei}` : 'https://via.placeholder.com/600x400?text=Kein+Bild';
+        // Exakter Pfad zum Ordner Bilder (Großschreibung beachten)
+        const bildPfad = park.bild_datei ? `Bilder/${park.bild_datei}` : 'https://via.placeholder.com/600x400?text=Kein+Bild';
 
         const card = document.createElement('div');
         card.className = 'park-card';
