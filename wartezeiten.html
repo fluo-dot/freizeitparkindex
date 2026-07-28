@@ -31,28 +31,21 @@
     .btn-back:hover { background: rgba(255,255,255,0.25); }
 
     .container { max-width: 1200px; margin: 30px auto; padding: 0 24px; flex-grow: 1; width: 100%; }
-
     .page-header { text-align: center; margin-bottom: 24px; }
     .page-header h1 { font-size: 2.2rem; font-weight: 800; color: var(--primary); margin-bottom: 6px; }
-    
-    /* Info Box für Öffnungszeiten */
+
     .opening-banner { background: #eff6ff; border: 1px solid #bfdbfe; color: #1e40af; padding: 12px 20px; border-radius: var(--radius-md); text-align: center; font-weight: 600; font-size: 0.95rem; margin-bottom: 24px; }
 
-    /* Controls Panel */
     .controls { display: flex; gap: 16px; flex-wrap: wrap; margin-bottom: 24px; }
     .controls input, .controls select { padding: 12px 18px; border: 1px solid #cbd5e1; border-radius: var(--radius-md); font-size: 0.95rem; outline: none; flex: 1; min-width: 200px; }
-    .controls input:focus, .controls select:focus { border-color: var(--primary-accent); }
 
-    /* Stats Grid */
     .stats-bar { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-bottom: 32px; }
     .stat-card { background: var(--card-bg); padding: 20px; border-radius: var(--radius-lg); border: 1px solid #e2e8f0; box-shadow: var(--shadow-sm); text-align: center; }
     .stat-number { font-size: 2rem; font-weight: 800; color: var(--primary); }
-    .stat-label { font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase; font-weight: 700; letter-spacing: 0.5px; }
+    .stat-label { font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase; font-weight: 700; }
 
-    /* Attraktions Grid */
     .attraction-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(290px, 1fr)); gap: 20px; }
 
-    /* Attraction Card */
     .ride-card {
       background: var(--card-bg); border-radius: var(--radius-lg); padding: 20px; box-shadow: var(--shadow-sm);
       border: 1px solid #e2e8f0; border-left: 6px solid #cbd5e1; display: flex; flex-direction: column; justify-content: space-between;
@@ -62,8 +55,7 @@
     .ride-name { font-size: 1.1rem; font-weight: 700; color: var(--primary); margin-bottom: 12px; }
     .ride-meta { display: flex; justify-content: space-between; align-items: center; }
 
-    /* Badges */
-    .status-badge { font-size: 0.8rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; display: flex; align-items: center; gap: 6px; }
+    .status-badge { font-size: 0.8rem; font-weight: 700; text-transform: uppercase; display: flex; align-items: center; gap: 6px; }
     .status-open { color: #10b981; }
     .status-closed { color: #ef4444; }
 
@@ -191,9 +183,7 @@
 
     async function ladeOeffnungszeiten(uuid) {
       try {
-        const res = await fetch('https://api.wartezeiten.app/v1/openingtimes', {
-          headers: { 'accept': 'application/json', 'park': uuid, 'language': 'de' }
-        });
+        const res = await fetch(`https://api.wartezeiten.app/v1/openingtimes?park=${uuid}&language=de`);
         if (res.ok) {
           const data = await res.json();
           const heute = Array.isArray(data) ? data[0] : (data.openingtimes ? data.openingtimes[0] : null);
@@ -210,11 +200,10 @@
 
     async function ladeApiDaten(uuid) {
       try {
-        const response = await fetch('https://api.wartezeiten.app/v1/waitingtimes', {
-          headers: { 'accept': 'application/json', 'park': uuid, 'language': 'de' }
-        });
+        // Query-Parameter statt benutzerdefinierte Header
+        const response = await fetch(`https://api.wartezeiten.app/v1/waitingtimes?park=${uuid}&language=de`);
 
-        if (!response.ok) throw new Error(`API Fehler`);
+        if (!response.ok) throw new Error(`API Fehler (${response.status})`);
 
         const data = await response.json();
         alleAttraktionen = Array.isArray(data) ? data : (data.items || data.waitingtimes || []);
