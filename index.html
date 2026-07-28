@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Freizeitpark Guide - Startseite</title>
+  <style>
+    /* Grundlegendes Styling */
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+    body { background-color: #f4f6f9; color: #333; line-height: 1.6; }
+
+    /* Hero Banner / Header */
+    .hero {
+      background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+      color: white;
+      text-align: center;
+      padding: 80px 20px;
+    }
+    .hero h1 { font-size: 2.8rem; margin-bottom: 15px; }
+    .hero p { font-size: 1.2rem; max-width: 600px; margin: 0 auto 30px auto; opacity: 0.9; }
+    
+    .btn-hero {
+      display: inline-block;
+      background-color: #2ecc71;
+      color: white;
+      padding: 15px 35px;
+      font-size: 1.2rem;
+      font-weight: bold;
+      border-radius: 30px;
+      text-decoration: none;
+      box-shadow: 0 4px 15px rgba(46, 204, 113, 0.4);
+      transition: all 0.3s ease;
+    }
+    .btn-hero:hover {
+      background-color: #27ae60;
+      transform: translateY(-3px);
+      box-shadow: 0 6px 20px rgba(46, 204, 113, 0.6);
+    }
+
+    /* Inhalts-Container */
+    .container {
+      max-width: 1000px;
+      margin: 40px auto;
+      padding: 0 20px;
+    }
+
+    .section-title {
+      text-align: center;
+      color: #2c3e50;
+      font-size: 1.8rem;
+      margin-bottom: 30px;
+    }
+
+    /* Feature / Tipp Karten Grid */
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 25px;
+    }
+
+    .feature-card {
+      background: white;
+      padding: 25px;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+      text-align: center;
+    }
+    .feature-icon {
+      font-size: 2.5rem;
+      margin-bottom: 15px;
+    }
+    .feature-card h3 {
+      color: #2c3e50;
+      margin-bottom: 10px;
+    }
+    .feature-card p {
+      color: #666;
+      font-size: 0.95rem;
+    }
+
+    /* Call to Action Banner */
+    .cta-banner {
+      background-color: #3498db;
+      color: white;
+      text-align: center;
+      padding: 40px 20px;
+      border-radius: 12px;
+      margin-top: 50px;
+    }
+    .cta-banner h2 { margin-bottom: 15px; }
+    .cta-banner a {
+      display: inline-block;
+      margin-top: 15px;
+      background: white;
+      color: #3498db;
+      padding: 12px 25px;
+      border-radius: 20px;
+      text-decoration: none;
+      font-weight: bold;
+    }
+    .cta-banner a:hover { background: #f1f1f1; }
+
+    footer {
+      text-align: center;
+      padding: 20px;
+      color: #888;
+      font-size: 0.9rem;
+      margin-top: 40px;
+    }
+  </style>
+</head>
+<body>
+
+  <header class="hero">
+    <h1>Dein Ultimativer Freizeitpark Guide</h1>
+    <p>Entdecke die besten Freizeitparks in Europa, vergleiche Fast-Pass-Systeme und behalte alle Live-Wartezeiten im Blick!</p>
+    <a href="parks.html" class="btn-hero">🎡 Jetzt Parks entdecken</a>
+  </header>
+
+  <main class="container">
+    <h2 class="section-title">Was dich auf unserer Webseite erwartet</h2>
+    
+    <div class="features-grid">
+      <div class="feature-card">
+        <div class="feature-icon">📍</div>
+        <h3>Park-Übersicht</h3>
+        <p>Alle wichtigen Infos, Standorte und Beschreibungen der beliebtesten Freizeitparks auf einen Blick.</p>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-icon">🎟️</div>
+        <h3>Fast-Pass Infos</h3>
+        <p>Detaillierte Anleitungen zu Virtual Line, Quick Pass & Co. – damit du weniger anstehst und mehr erlebst.</p>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-icon">⏱️</div>
+        <h3>Live Wartezeiten</h3>
+        <p>Greife in Echtzeit auf die aktuellen Wartezeiten der Attraktionen direkt aus den Parks zu.</p>
+      </div>
+    </div>
+
+    <div class="cta-banner">
+      <h2>Bereit für dein nächstes Abenteuer?</h2>
+      <p>Wähle aus unserer Liste deinen Lieblingspark aus und plane deinen perfekten Tag!</p>
+      <a href="parks.html">Zur Park-Übersicht wechseln</a>
+    </div>
+  </main>
+
+  <footer>
+    <p>&copy; Freizeitpark Guide - Datenquelle Wartezeiten: Wartezeiten.APP</p>
+  </footer>
+
+</body>
+</html>
