@@ -11,7 +11,6 @@
     :root {
       --primary: #0f172a;
       --primary-accent: #2563eb;
-      --accent-green: #10b981;
       --bg-color: #f8fafc;
       --card-bg: #ffffff;
       --text-main: #0f172a;
@@ -27,13 +26,12 @@
 
     nav { background: rgba(15, 23, 42, 0.95); backdrop-filter: blur(10px); position: sticky; top: 0; z-index: 100; border-bottom: 1px solid rgba(255,255,255,0.1); }
     .nav-container { max-width: 1200px; margin: 0 auto; padding: 16px 24px; display: flex; justify-content: space-between; align-items: center; }
-    .logo { color: white; font-size: 1.3rem; font-weight: 800; text-decoration: none; display: flex; align-items: center; gap: 10px; }
+    .logo { color: white; font-size: 1.3rem; font-weight: 800; text-decoration: none; }
     .btn-back { background: rgba(255,255,255,0.1); color: white; text-decoration: none; padding: 8px 16px; border-radius: 30px; font-size: 0.88rem; font-weight: 600; transition: background 0.2s; }
     .btn-back:hover { background: rgba(255,255,255,0.25); }
 
     .container { max-width: 1100px; margin: 30px auto; padding: 0 24px; flex-grow: 1; width: 100%; }
 
-    /* Hero Card */
     .hero-card { background: var(--card-bg); border-radius: var(--radius-lg); overflow: hidden; box-shadow: var(--shadow-md); border: 1px solid #e2e8f0; margin-bottom: 30px; }
     .hero-img { width: 100%; height: 380px; object-fit: cover; display: block; background-color: #cbd5e1; }
     .hero-content { padding: 32px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 20px; }
@@ -41,22 +39,16 @@
     .hero-location { font-size: 1.05rem; color: var(--text-muted); font-weight: 600; }
     
     .hero-actions { display: flex; gap: 12px; flex-wrap: wrap; }
-    .btn-action { text-decoration: none; padding: 14px 24px; border-radius: var(--radius-md); font-weight: 700; font-size: 0.95rem; transition: transform 0.2s, background 0.2s; display: inline-flex; align-items: center; gap: 8px; }
+    .btn-action { text-decoration: none; padding: 14px 24px; border-radius: var(--radius-md); font-weight: 700; font-size: 0.95rem; transition: transform 0.2s; display: inline-flex; align-items: center; gap: 8px; }
     .btn-action:hover { transform: translateY(-2px); }
     .btn-primary { background-color: var(--primary-accent); color: white; }
-    .btn-primary:hover { background-color: #1d4ed8; }
     .btn-outline { border: 1px solid #cbd5e1; color: var(--primary); background: #f8fafc; }
-    .btn-outline:hover { background: #e2e8f0; }
 
-    /* Layout Grid */
     .details-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 30px; }
     .card { background: var(--card-bg); border-radius: var(--radius-lg); padding: 28px; box-shadow: var(--shadow-sm); border: 1px solid #e2e8f0; margin-bottom: 24px; }
-    .card h2 { color: var(--primary); font-size: 1.3rem; font-weight: 700; margin-bottom: 16px; border-bottom: 2px solid #f1f5f9; padding-bottom: 12px; display: flex; align-items: center; gap: 10px; }
+    .card h2 { color: var(--primary); font-size: 1.3rem; font-weight: 700; margin-bottom: 16px; border-bottom: 2px solid #f1f5f9; padding-bottom: 12px; }
 
-    /* Open Hours Card */
-    .opening-box { background: #eff6ff; border: 1px solid #bfdbfe; border-radius: var(--radius-md); padding: 16px; font-weight: 600; color: #1e40af; display: flex; align-items: center; gap: 12px; }
-
-    /* FastPass Styling */
+    .opening-box { background: #eff6ff; border: 1px solid #bfdbfe; border-radius: var(--radius-md); padding: 16px; font-weight: 600; color: #1e40af; }
     .fastpass-badge { display: inline-block; background-color: #e0f2fe; color: #0369a1; padding: 4px 14px; border-radius: 20px; font-weight: 700; font-size: 0.85rem; margin-bottom: 14px; }
     .attraction-list { list-style: none; margin-top: 16px; display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 10px; }
     .attraction-list li { background: #f8fafc; border-left: 3px solid var(--primary-accent); padding: 10px 14px; border-radius: 6px; font-size: 0.9rem; font-weight: 600; color: #334155; }
@@ -87,7 +79,7 @@
     <div id="content" style="display: none;"></div>
   </main>
 
-<footer>
+  <footer>
     <p>FreizeitparkIndex - Powered by <a href="https://wartezeiten.app" target="_blank" rel="noopener">Wartezeiten.APP</a></p>
   </footer>
 
@@ -148,9 +140,8 @@
     async function ladeOeffnungszeiten(uuid) {
       if (!uuid) return;
       try {
-        const res = await fetch('https://api.wartezeiten.app/v1/openingtimes', {
-          headers: { 'accept': 'application/json', 'park': uuid, 'language': 'de' }
-        });
+        // Query-Parameter statt benutzerdefinierte Header (CORS-Sicher)
+        const res = await fetch(`https://api.wartezeiten.app/v1/openingtimes?park=${uuid}&language=de`);
         if (res.ok) {
           const data = await res.json();
           const heute = Array.isArray(data) ? data[0] : (data.openingtimes ? data.openingtimes[0] : null);
@@ -160,11 +151,11 @@
             const bis = heute.closes || heute.close || 'N/A';
             box.innerHTML = `📅 Heute geöffnet: <strong>${von} - ${bis} Uhr</strong>`;
           } else if (box) {
-            box.innerHTML = `📅 Heute geschlossen oder keine Öffnungszeiten bekannt.`;
+            box.innerHTML = `📅 Heute geschlossen oder keine Öffnungszeiten verfügbar.`;
           }
         }
       } catch (e) {
-        console.log("Öffnungszeiten konnte nicht geladen werden.");
+        console.log("Öffnungszeiten konnten nicht geladen werden.");
       }
     }
 
@@ -173,7 +164,7 @@
       
       const beschreibung = park.beschreibung ? park.beschreibung.replace(/&lt;br&gt;|<br>/g, '<br>') : 'Keine Beschreibung verfügbar.';
       const fastpassInfo = park.fastpass_info ? park.fastpass_info.replace(/&lt;br&gt;|<br>/g, '<br>') : '';
-      const bildPfad = park.bild_datei ? `bilder/${park.bild_datei}` : 'https://via.placeholder.com/1000x400?text=Kein+Bild';
+      const bildPfad = park.bild_datei ? `Bilder/${park.bild_datei}` : 'https://via.placeholder.com/1000x400?text=Kein+Bild';
 
       let fastpassHTML = '';
       if (park.fastpass_attraktionen) {
