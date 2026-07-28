@@ -3,39 +3,60 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Freizeitpark Übersicht</title>
+  <title>Freizeitpark Übersicht - FreizeitparkIndex</title>
   <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-    body { background-color: #f4f6f9; color: #333; padding: 20px; }
-
-    header { text-align: center; margin-bottom: 30px; }
-    header h1 { color: #2c3e50; font-size: 2.2rem; margin-bottom: 10px; }
-    header p { color: #666; }
-
-    .controls { max-width: 1100px; margin: 0 auto 30px auto; display: flex; gap: 15px; flex-wrap: wrap; }
-    .controls input, .controls select {
-      padding: 12px 15px; border: 1px solid #ccc; border-radius: 8px; font-size: 1rem; flex: 1; min-width: 200px;
+    :root {
+      --primary: #1e3c72;
+      --primary-dark: #142850;
+      --accent: #2ecc71;
+      --accent-hover: #27ae60;
+      --bg-color: #f4f6f9;
+      --card-bg: #ffffff;
+      --text-main: #2c3e50;
+      --text-muted: #6c757d;
+      --border-radius: 12px;
+      --shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
     }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+    body { background-color: var(--bg-color); color: var(--text-main); line-height: 1.6; display: flex; flex-direction: column; min-height: 100vh; }
+
+    /* Navigation */
+    nav { background-color: var(--primary); padding: 15px 20px; box-shadow: 0 2px 10px rgba(0,0,0,0.15); position: sticky; top: 0; z-index: 100; }
+    .nav-container { max-width: 1100px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; }
+    .logo { color: white; font-size: 1.4rem; font-weight: bold; text-decoration: none; display: flex; align-items: center; gap: 8px; }
+    .nav-links { display: flex; gap: 15px; list-style: none; }
+    .nav-links a { color: rgba(255, 255, 255, 0.85); text-decoration: none; font-weight: 600; padding: 6px 12px; border-radius: 6px; transition: all 0.2s; }
+    .nav-links a:hover, .nav-links a.active { color: white; background: rgba(255, 255, 255, 0.15); }
+
+    .header-section { text-align: center; margin: 40px 0 20px 0; padding: 0 20px; }
+    .header-section h1 { color: var(--primary-dark); font-size: 2.2rem; margin-bottom: 10px; }
+    .header-section p { color: var(--text-muted); }
+
+    .container { max-width: 1100px; margin: 0 auto 40px auto; padding: 0 20px; flex-grow: 1; width: 100%; }
+
+    .controls { display: flex; gap: 15px; flex-wrap: wrap; margin-bottom: 30px; }
+    .controls input, .controls select {
+      padding: 12px 15px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 1rem; flex: 1; min-width: 200px; outline: none; background: white;
+    }
+    .controls input:focus, .controls select:focus { border-color: var(--primary); }
 
     .park-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
       gap: 25px;
-      max-width: 1100px;
-      margin: 0 auto;
     }
 
-    /* Die Karte ist jetzt ein Link */
     .park-card {
-      background: white; 
-      border-radius: 12px; 
+      background: var(--card-bg); 
+      border-radius: var(--border-radius); 
       overflow: hidden; 
-      box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+      box-shadow: var(--shadow);
       transition: transform 0.2s, box-shadow 0.2s; 
       display: flex; 
       flex-direction: column;
-      text-decoration: none; /* entfernt Unterstreichung des Links */
-      color: inherit; /* Behält die Textfarben bei */
+      text-decoration: none; 
+      color: inherit; 
       cursor: pointer;
     }
     .park-card:hover { transform: translateY(-5px); box-shadow: 0 8px 25px rgba(0,0,0,0.15); }
@@ -43,37 +64,68 @@
     .park-img { width: 100%; height: 180px; object-fit: cover; background-color: #e0e0e0; }
     .park-body { padding: 20px; display: flex; flex-direction: column; flex-grow: 1; }
     
-    .park-title { font-size: 1.4rem; color: #2c3e50; margin-bottom: 5px; }
-    .park-location { font-size: 0.9rem; color: #7f8c8d; margin-bottom: 15px; font-weight: 500; }
+    .park-title { font-size: 1.3rem; color: var(--primary-dark); margin-bottom: 5px; }
+    .park-location { font-size: 0.9rem; color: var(--text-muted); margin-bottom: 15px; font-weight: 500; }
 
     .button-group { margin-top: auto; }
     .btn {
-      display: block; width: 100%; text-align: center; padding: 12px; border-radius: 6px;
+      display: block; width: 100%; text-align: center; padding: 10px; border-radius: 6px;
       font-weight: bold; font-size: 0.95rem; transition: background-color 0.2s;
     }
-    .btn-primary { background-color: #3498db; color: white; }
-    .park-card:hover .btn-primary { background-color: #2980b9; }
+    .btn-primary { background-color: var(--primary); color: white; }
+    .park-card:hover .btn-primary { background-color: var(--primary-dark); }
 
-    .loading, .error { text-align: center; font-size: 1.2rem; color: #666; margin-top: 20px; }
+    .loading, .error { text-align: center; font-size: 1.2rem; color: var(--text-muted); margin-top: 20px; }
     .error { color: #e74c3c; }
+
+    /* Footer */
+    footer {
+      background-color: var(--primary-dark);
+      color: white;
+      text-align: center;
+      padding: 20px;
+      margin-top: auto;
+      font-size: 0.95rem;
+    }
+
+    @media (max-width: 600px) {
+      .nav-container { flex-direction: column; gap: 10px; }
+      .controls { flex-direction: column; }
+    }
   </style>
 </head>
 <body>
 
-  <header>
+  <nav>
+    <div class="nav-container">
+      <a href="index.html" class="logo">🎢 FreizeitparkIndex</a>
+      <ul class="nav-links">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="parks.html" class="active">Parks</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <header class="header-section">
     <h1>Freizeitparks Entdecken</h1>
     <p>Finde Infos und Fast-Pass-Details für deine Lieblingsparks!</p>
   </header>
 
-  <div class="controls">
-    <input type="text" id="searchInput" placeholder="Parkname oder Ort suchen...">
-    <select id="countryFilter">
-      <option value="">Alle Länder</option>
-    </select>
-  </div>
+  <main class="container">
+    <div class="controls">
+      <input type="text" id="searchInput" placeholder="Parkname oder Ort suchen...">
+      <select id="countryFilter">
+        <option value="">Alle Länder</option>
+      </select>
+    </div>
 
-  <div id="loading" class="loading">Lade Parks aus 'parks.csv'...</div>
-  <div class="park-grid" id="parkGrid"></div>
+    <div id="loading" class="loading">Lade Parks aus 'parks.csv'...</div>
+    <div class="park-grid" id="parkGrid"></div>
+  </main>
+
+  <footer>
+    <p>FreizeitparkIndex - 2026</p>
+  </footer>
 
   <script>
     let alleParks = [];
@@ -133,12 +185,10 @@
       }
       dateiname = dateiname.trim();
       
-      // Falls bereits eine vollständige URL oder 'Bilder/' enthalten ist
       if (dateiname.startsWith('http://') || dateiname.startsWith('https://') || dateiname.startsWith('Bilder/')) {
         return dateiname;
       }
       
-      // Ansonsten Ordner 'Bilder/' voranstellen
       return `Bilder/${dateiname}`;
     }
 
@@ -188,7 +238,6 @@
       parks.forEach(park => {
         const bildPfad = getBildPfad(park.bild_url);
 
-        // Die gesamte Karte ist nun ein <a> Tag
         const card = document.createElement('a');
         card.className = 'park-card';
         card.href = `park-detail.html?id=${park.id}`;
