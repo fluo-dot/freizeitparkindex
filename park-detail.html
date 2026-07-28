@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Park Details - FreizeitparkIndex</title>
+  <style>
+    :root {
+      --primary: #1e3c72;
+      --primary-dark: #142850;
+      --accent: #2ecc71;
+      --accent-hover: #27ae60;
+      --bg-color: #f4f6f9;
+      --card-bg: #ffffff;
+      --text-main: #2c3e50;
+      --text-muted: #6c757d;
+      --border-radius: 12px;
+      --shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+    body { background-color: var(--bg-color); color: var(--text-main); line-height: 1.6; display: flex; flex-direction: column; min-height: 100vh; }
+
+    /* Navigation Header */
+    nav { background-color: var(--primary); padding: 15px 20px; box-shadow: 0 2px 10px rgba(0,0,0,0.15); }
+    .nav-container { max-width: 1100px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; }
+    .logo { color: white; font-size: 1.4rem; font-weight: bold; text-decoration: none; display: flex; align-items: center; gap: 8px; }
+    .btn-back { background: rgba(255,255,255,0.15); color: white; text-decoration: none; padding: 8px 16px; border-radius: 20px; font-size: 0.9rem; font-weight: 600; transition: background 0.2s; }
+    .btn-back:hover { background: rgba(255,255,255,0.3); }
+
+    /* Main Container */
+    .container { max-width: 1100px; margin: 30px auto; padding: 0 20px; flex-grow: 1; }
+
+    /* Park Hero Banner */
+    .hero-card { background: var(--card-bg); border-radius: var(--border-radius); overflow: hidden; box-shadow: var(--shadow); margin-bottom: 30px; }
+    .hero-img { width: 100%; height: 350px; object-fit: cover; display: block; background-color: #e0e0e0; }
+    .hero-content { padding: 30px; display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 20px; }
+    .hero-title h1 { font-size: 2.2rem; color: var(--primary-dark); margin-bottom: 5px; }
+    .hero-location { font-size: 1.1rem; color: var(--text-muted); font-weight: 500; }
+    
+    .hero-actions { display: flex; gap: 12px; flex-wrap: wrap; }
+    .btn-action { text-decoration: none; padding: 12px 22px; border-radius: 8px; font-weight: bold; font-size: 0.95rem; transition: transform 0.2s, background 0.2s; display: inline-flex; align-items: center; gap: 8px; }
+    .btn-action:hover { transform: translateY(-2px); }
+    .btn-primary { background-color: var(--accent); color: white; }
+    .btn-primary:hover { background-color: var(--accent-hover); }
+    .btn-outline { border: 2px solid var(--primary); color: var(--primary); background: transparent; }
+    .btn-outline:hover { background: var(--primary); color: white; }
+
+    /* Details Grid Layout */
+    .details-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 30px; }
+
+    .card { background: var(--card-bg); border-radius: var(--border-radius); padding: 25px; box-shadow: var(--shadow); margin-bottom: 30px; }
+    .card h2 { color: var(--primary-dark); font-size: 1.4rem; margin-bottom: 15px; border-bottom: 2px solid #edf2f7; padding-bottom: 10px; display: flex; align-items: center; gap: 10px; }
+
+    .desc-text { font-size: 1.05rem; color: #4a5568; line-height: 1.7; }
+
+    /* FastPass Styling */
+    .fastpass-badge { display: inline-block; background-color: #ebf8ff; color: #2b6cb0; border: 1px solid #bee3f8; padding: 4px 12px; border-radius: 20px; font-weight: bold; font-size: 0.9rem; margin-bottom: 15px; }
+    .attraction-list { list-style: none; margin-top: 15px; display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 10px; }
+    .attraction-list li { background: #f8fafc; border-left: 4px solid var(--accent); padding: 10px 14px; border-radius: 4px; font-size: 0.95rem; font-weight: 500; color: #334155; }
+
+    /* Single Rider Box */
+    .singlerider-box { display: flex; align-items: center; gap: 15px; background: #fffaf0; border: 1px solid #feebc8; padding: 15px; border-radius: 8px; }
+    .singlerider-icon { font-size: 2rem; }
+    .singlerider-text h4 { color: #dd6b20; margin-bottom: 3px; }
+    .singlerider-text p { color: #7b341e; font-size: 0.9rem; }
+
+    /* Status & Utility */
+    .loading, .error { text-align: center; padding: 50px 20px; font-size: 1.2rem; color: var(--text-muted); }
+    .error { color: #e74c3c; }
+
+    /* Footer */
+    footer { background-color: var(--primary-dark); color: white; text-align: center; padding: 20px; margin-top: auto; font-size: 0.95rem; }
+    footer a { color: var(--accent); text-decoration: none; font-weight: bold; }
+    footer a:hover { text-decoration: underline; }
+
+    @media (max-width: 850px) {
+      .details-grid { grid-template-columns: 1fr; }
+      .hero-img { height: 220px; }
+      .hero-content { flex-direction: column; }
+      .hero-actions { width: 100%; }
+      .btn-action { flex: 1; justify-content: center; text-align: center; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <div class="nav-container">
+      <a href="index.html" class="logo">🎢 FreizeitparkIndex</a>
+      <a href="parks.html" class="btn-back">← Zurück zur Übersicht</a>
+    </div>
+  </nav>
+
+  <main class="container">
+    <div id="loading" class="loading">Lade Park-Informationen...</div>
+    <div id="content" style="display: none;"></div>
+  </main>
+
+  <footer>
+    <p>FreizeitparkIndex - Powered by <a href="https://wartezeiten.app" target="_blank" rel="noopener">Wartezeiten.APP</a></p>
+  </footer>
+
+  <script>
+    // CSV Parser
+    function parseCSV(text) {
+      const lines = text.split(/\r?\n/).filter(line => line.trim() !== '');
+      if (lines.length === 0) return [];
+
+      function splitLine(line) {
+        const result = [];
+        let current = '';
+        let inQuotes = false;
+        for (let i = 0; i < line.length; i++) {
+          const char = line[i];
+          if (char === '"') {
+            if (inQuotes && line[i + 1] === '"') { current += '"'; i++; }
+            else { inQuotes = !inQuotes; }
+          } else if (char === ',' && !inQuotes) {
+            result.push(current.trim());
+            current = '';
+          } else {
+            current += char;
+          }
+        }
+        result.push(current.trim());
+        return result;
+      }
+
+      const headers = splitLine(lines[0]);
+      return lines.slice(1).map(line => {
+        const values = splitLine(line);
+        let row = {};
+        headers.forEach((h, idx) => { row[h] = values[idx] || ''; });
+        return row;
+      });
+    }
+
+    async function ladeParkDetails() {
+      const urlParams = new URLSearchParams(window.location.search);
+      const parkId = urlParams.get('id');
+
+      if (!parkId) {
+        zeigeFehler("Keine Park-ID in der URL angegeben.");
+        return;
+      }
+
+      try {
+        const response = await fetch('parks.csv');
+        if (!response.ok) throw new Error("CSV-Datei konnte nicht geladen werden.");
+
+        const csvText = await response.text();
+        const parks = parseCSV(csvText);
+        const park = parks.find(p => p.id === parkId);
+
+        if (!park) {
+          zeigeFehler("Der angeforderte Freizeitpark wurde nicht gefunden.");
+          return;
+        }
+
+        renderParkDetails(park);
+
+      } catch (err) {
+        console.error(err);
+        zeigeFehler("Fehler beim Laden der Park-Informationen.");
+      }
+    }
+
+    function renderParkDetails(park) {
+      document.title = `${park.name} - FreizeitparkIndex`;
+      
+      const beschreibungFormatted = park.beschreibung ? park.beschreibung.replace(/&lt;br&gt;|<br>/g, '<br>') : 'Keine Beschreibung vorhanden.';
+      const fastpassInfoFormatted = park.fastpass_info ? park.fastpass_info.replace(/&lt;br&gt;|<br>/g, '<br>') : '';
+      
+      // FastPass Attraktionen Komma-getrennt in eine HTML-Liste umwandeln
+      let fastpassAttraktionenHTML = '';
+      if (park.fastpass_attraktionen) {
+        const liste = park.fastpass_attraktionen.split(',').map(item => item.trim()).filter(item => item !== '');
+        if (liste.length > 0) {
+          fastpassAttraktionenHTML = `<ul class="attraction-list">` + 
+            liste.map(attr => `<li>🎢 ${attr}</li>`).join('') + 
+            `</ul>`;
+        }
+      }
+
+      const contentDiv = document.getElementById('content');
+      contentDiv.innerHTML = `
+        <div class="hero-card">
+          <img class="hero-img" src="${park.bild_url || 'https://via.placeholder.com/1000x350?text=Kein+Bild'}" alt="${park.name}">
+          <div class="hero-content">
+            <div class="hero-title">
+              <h1>${park.name}</h1>
+              <div class="hero-location">📍 ${park.ort ? park.ort + ', ' : ''}${park.land}</div>
+            </div>
+            <div class="hero-actions">
+              <a href="wartezeiten.html?id=${park.id}" class="btn-action btn-primary">⏱️ Live Wartezeiten</a>
+              ${park.website_url ? `<a href="${park.website_url}" target="_blank" rel="noopener" class="btn-action btn-outline">🌐 Offizielle Website</a>` : ''}
+            </div>
+          </div>
+        </div>
+
+        <div class="details-grid">
+          <div>
+            <div class="card">
+              <h2>📖 Beschreibung</h2>
+              <p class="desc-text">${beschreibungFormatted}</p>
+            </div>
+
+            ${park.fastpass_name ? `
+            <div class="card">
+              <h2>🎟️ Fast-Pass System</h2>
+              <span class="fastpass-badge">${park.fastpass_name}</span>
+              <p class="desc-text">${fastpassInfoFormatted}</p>
+              ${fastpassAttraktionenHTML ? `
+                <h3 style="margin-top: 20px; font-size: 1.05rem; color: var(--primary-dark);">Verfügbare Attraktionen:</h3>
+                ${fastpassAttraktionenHTML}
+              ` : ''}
+            </div>
+            ` : ''}
+          </div>
+
+          <div>
+            <div class="card">
+              <h2>👤 Single Rider</h2>
+              <div class="singlerider-box">
+                <div class="singlerider-icon">🧍</div>
+                <div class="singlerider-text">
+                  <h4>Single Rider Eingänge</h4>
+                  <p>${park.singlerider ? park.singlerider : 'Keine Information verfügbar.'}</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="card" style="text-align: center;">
+              <h2>⚡ Schnell-Zugriff</h2>
+              <p style="margin-bottom: 15px; color: var(--text-muted); font-size: 0.95rem;">Siehst du dir gerade den Park an? Prüfe die aktuellen Schlangen!</p>
+              <a href="wartezeiten.html?id=${park.id}" class="btn-action btn-primary" style="width: 100%; justify-content: center;">⏱️ Live Wartezeiten Öffnen</a>
+            </div>
+          </div>
+        </div>
+      `;
+
+      document.getElementById('loading').style.display = 'none';
+      contentDiv.style.display = 'block';
+    }
+
+    function zeigeFehler(msg) {
+      const loading = document.getElementById('loading');
+      loading.innerText = msg;
+      loading.className = 'error';
+    }
+
+    ladeParkDetails();
+  </script>
+</body>
+</html>

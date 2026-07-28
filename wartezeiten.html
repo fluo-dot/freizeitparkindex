@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Live Wartezeiten - FreizeitparkIndex</title>
+  <style>
+    :root {
+      --primary: #1e3c72;
+      --primary-dark: #142850;
+      --accent: #2ecc71;
+      --bg-color: #f4f6f9;
+      --card-bg: #ffffff;
+      --text-main: #2c3e50;
+      --text-muted: #6c757d;
+      --border-radius: 12px;
+      --shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+    body { background-color: var(--bg-color); color: var(--text-main); line-height: 1.6; display: flex; flex-direction: column; min-height: 100vh; }
+
+    /* Navigation Header */
+    nav { background-color: var(--primary); padding: 15px 20px; box-shadow: 0 2px 10px rgba(0,0,0,0.15); }
+    .nav-container { max-width: 1100px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; }
+    .logo { color: white; font-size: 1.4rem; font-weight: bold; text-decoration: none; display: flex; align-items: center; gap: 8px; }
+    .btn-back { background: rgba(255,255,255,0.15); color: white; text-decoration: none; padding: 8px 16px; border-radius: 20px; font-size: 0.9rem; font-weight: 600; transition: background 0.2s; }
+    .btn-back:hover { background: rgba(255,255,255,0.3); }
+
+    /* Main Container */
+    .container { max-width: 1100px; margin: 30px auto; padding: 0 20px; flex-grow: 1; }
+
+    /* Header & Filter Controls */
+    .page-header { text-align: center; margin-bottom: 25px; }
+    .page-header h1 { color: var(--primary-dark); font-size: 2.2rem; margin-bottom: 5px; }
+    .page-header p { color: var(--text-muted); font-size: 1rem; }
+
+    .controls { display: flex; gap: 15px; flex-wrap: wrap; margin-bottom: 25px; }
+    .controls input, .controls select { padding: 12px 15px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 0.95rem; flex: 1; min-width: 200px; }
+
+    /* Stats Banner */
+    .stats-bar { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 30px; }
+    .stat-card { background: var(--card-bg); padding: 15px 20px; border-radius: var(--border-radius); box-shadow: var(--shadow); text-align: center; }
+    .stat-number { font-size: 1.8rem; font-weight: bold; color: var(--primary-dark); }
+    .stat-label { font-size: 0.85rem; color: var(--text-muted); text-transform: uppercase; font-weight: 600; }
+
+    /* Grid für Attraktionen */
+    .attraction-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; }
+
+    /* Attraktions Card Design */
+    .ride-card { background: var(--card-bg); border-radius: var(--border-radius); padding: 20px; box-shadow: var(--shadow); display: flex; flex-direction: column; justify-content: space-between; border-left: 6px solid #cbd5e1; transition: transform 0.2s; }
+    .ride-card:hover { transform: translateY(-3px); }
+
+    .ride-name { font-size: 1.15rem; color: var(--primary-dark); font-weight: bold; margin-bottom: 10px; }
+    .ride-meta { display: flex; justify-content: space-between; align-items: center; margin-top: 15px; }
+
+    /* Dynamic Badges for Wait Time */
+    .time-badge { padding: 6px 14px; border-radius: 20px; font-weight: bold; font-size: 1rem; color: white; display: inline-flex; align-items: center; gap: 5px; }
+    .badge-green { background-color: #2ecc71; }
+    .badge-yellow { background-color: #f39c12; }
+    .badge-red { background-color: #e74c3c; }
+    .badge-closed { background-color: #95a5a6; }
+
+    .status-text { font-size: 0.85rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
+    .status-open { color: #2ecc71; }
+    .status-closed { color: #e74c3c; }
+
+    /* Utility */
+    .loading, .error { text-align: center; padding: 50px 20px; font-size: 1.2rem; color: var(--text-muted); }
+    .error { color: #e74c3c; }
+
+    /* Footer */
+    footer { background-color: var(--primary-dark); color: white; text-align: center; padding: 20px; margin-top: auto; font-size: 0.95rem; }
+    footer a { color: var(--accent); text-decoration: none; font-weight: bold; }
+    footer a:hover { text-decoration: underline; }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <div class="nav-container">
+      <a href="index.html" class="logo">🎢 FreizeitparkIndex</a>
+      <a id="backToDetail" href="parks.html" class="btn-back">← Zurück zur Park-Info</a>
+    </div>
+  </nav>
+
+  <main class="container">
+    <div class="page-header">
+      <h1 id="parkTitle">Live Wartezeiten</h1>
+      <p>Echtzeit-Wartezeiten für Attraktionen und Achterbahnen</p>
+    </div>
+
+    <div class="controls">
+      <input type="text" id="searchInput" placeholder="Attraktion suchen...">
+      <select id="sortSelect">
+        <option value="wait-desc">Wartezeit (Höchste zuerst)</option>
+        <option value="wait-asc">Wartezeit (Niedrigste zuerst)</option>
+        <option value="name-asc">Name (A-Z)</option>
+      </select>
+    </div>
+
+    <div class="stats-bar" id="statsBar" style="display: none;">
+      <div class="stat-card">
+        <div class="stat-number" id="statOpen">0</div>
+        <div class="stat-label">Geöffnete Attraktionen</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number" id="statAvg">0 min</div>
+        <div class="stat-label">Durchschn. Wartezeit</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number" id="statClosed">0</div>
+        <div class="stat-label">Geschlossen</div>
+      </div>
+    </div>
+
+    <div id="loading" class="loading">Lade Live-Wartezeiten von Wartezeiten.APP...</div>
+    <div id="attractionGrid" class="attraction-grid"></div>
+  </main>
+
+  <footer>
+    <p>FreizeitparkIndex - Powered by <a href="https://wartezeiten.app" target="_blank" rel="noopener">Wartezeiten.APP</a></p>
+  </footer>
+
+  <script>
+    let alleAttraktionen = [];
+
+    // CSV Parser für lokale parks.csv
+    function parseCSV(text) {
+      const lines = text.split(/\r?\n/).filter(line => line.trim() !== '');
+      if (lines.length === 0) return [];
+
+      function splitLine(line) {
+        const result = [];
+        let current = '';
+        let inQuotes = false;
+        for (let i = 0; i < line.length; i++) {
+          const char = line[i];
+          if (char === '"') {
+            if (inQuotes && line[i + 1] === '"') { current += '"'; i++; }
+            else { inQuotes = !inQuotes; }
+          } else if (char === ',' && !inQuotes) {
+            result.push(current.trim());
+            current = '';
+          } else {
+            current += char;
+          }
+        }
+        result.push(current.trim());
+        return result;
+      }
+
+      const headers = splitLine(lines[0]);
+      return lines.slice(1).map(line => {
+        const values = splitLine(line);
+        let row = {};
+        headers.forEach((h, idx) => { row[h] = values[idx] || ''; });
+        return row;
+      });
+    }
+
+    async function initialisiereWartezeiten() {
+      const urlParams = new URLSearchParams(window.location.search);
+      const parkId = urlParams.get('id');
+
+      if (!parkId) {
+        zeigeFehler("Keine Park-ID übergeben.");
+        return;
+      }
+
+      // Link im Header anpassen
+      document.getElementById('backToDetail').href = `park-detail.html?id=${parkId}`;
+
+      try {
+        // 1. Park-Name & api_park_id (UUID) aus parks.csv laden
+        const csvRes = await fetch('parks.csv');
+        if (!csvRes.ok) throw new Error("Konnte parks.csv nicht laden.");
+        
+        const csvText = await csvRes.text();
+        const parks = parseCSV(csvText);
+        const park = parks.find(p => p.id === parkId);
+
+        if (!park || !park.api_park_id) {
+          zeigeFehler("Für diesen Park ist keine API-UUID (api_park_id) hinterlegt.");
+          return;
+        }
+
+        document.getElementById('parkTitle').innerText = `Wartezeiten: ${park.name}`;
+        document.title = `Wartezeiten ${park.name} - FreizeitparkIndex`;
+
+        // 2. Wartezeiten-API aufrufen (mit geforderten HTTP-Headern)
+        await ladeApiDaten(park.api_park_id);
+
+      } catch (err) {
+        console.error(err);
+        zeigeFehler("Fehler beim Laden der Live-Wartezeiten.");
+      }
+    }
+
+    async function ladeApiDaten(uuid) {
+      try {
+        const response = await fetch('https://api.wartezeiten.app/v1/waitingtimes', {
+          method: 'GET',
+          headers: {
+            'accept': 'application/json',
+            'park': uuid,
+            'language': 'de'
+          }
+        });
+
+        if (!response.ok) throw new Error(`API Fehler: Status ${response.status}`);
+
+        const data = await response.json();
+        
+        // Flexibles Parsen der API Antwort
+        alleAttraktionen = Array.isArray(data) ? data : (data.items || data.waitingtimes || []);
+
+        if (alleAttraktionen.length === 0) {
+          zeigeFehler("Aktuell stehen keine Wartezeiten für diesen Park zur Verfügung.");
+          return;
+        }
+
+        document.getElementById('loading').style.display = 'none';
+        document.getElementById('statsBar').style.display = 'grid';
+
+        aktualisiereStatistiken(alleAttraktionen);
+        filterUndZeigeAttraktionen();
+
+      } catch (err) {
+        console.error(err);
+        zeigeFehler("Wartezeiten konnten nicht von der API abgerufen werden.");
+      }
+    }
+
+    function aktualisiereStatistiken(items) {
+      let offenCount = 0;
+      let geschlossenCount = 0;
+      let gesamtWartezeit = 0;
+
+      items.forEach(item => {
+        const status = (item.status || '').toLowerCase();
+        const istOffen = status === 'open' || status === 'opened' || item.isOpen === true || item.wait !== undefined;
+        const wartezeit = item.wait || item.waitTime || item.waitingtime || 0;
+
+        if (istOffen && wartezeit >= 0) {
+          offenCount++;
+          gesamtWartezeit += Number(wartezeit);
+        } else {
+          geschlossenCount++;
+        }
+      });
+
+      const avg = offenCount > 0 ? Math.round(gesamtWartezeit / offenCount) : 0;
+
+      document.getElementById('statOpen').innerText = offenCount;
+      document.getElementById('statClosed').innerText = geschlossenCount;
+      document.getElementById('statAvg').innerText = `${avg} min`;
+    }
+
+    function filterUndZeigeAttraktionen() {
+      const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+      const sortValue = document.getElementById('sortSelect').value;
+
+      // Filtern
+      let gefiltert = alleAttraktionen.filter(item => {
+        const name = item.name || item.title || '';
+        return name.toLowerCase().includes(searchTerm);
+      });
+
+      // Sortieren
+      gefiltert.sort((a, b) => {
+        const nameA = a.name || a.title || '';
+        const nameB = b.name || b.title || '';
+        const waitA = Number(a.wait || a.waitTime || a.waitingtime || 0);
+        const waitB = Number(b.wait || b.waitTime || b.waitingtime || 0);
+
+        if (sortValue === 'wait-desc') return waitB - waitA;
+        if (sortValue === 'wait-asc') return waitA - waitB;
+        if (sortValue === 'name-asc') return nameA.localeCompare(nameB);
+        return 0;
+      });
+
+      renderAttraktionen(gefiltert);
+    }
+
+    function renderAttraktionen(items) {
+      const grid = document.getElementById('attractionGrid');
+      grid.innerHTML = '';
+
+      if (items.length === 0) {
+        grid.innerHTML = '<p style="grid-column: 1/-1; text-align: center; color: var(--text-muted);">Keine Attraktionen gefunden.</p>';
+        return;
+      }
+
+      items.forEach(item => {
+        const name = item.name || item.title || 'Unbenannte Attraktion';
+        const wartezeit = item.wait ?? item.waitTime ?? item.waitingtime ?? null;
+        const statusRaw = (item.status || '').toLowerCase();
+        
+        const istGeoffnet = statusRaw === 'open' || statusRaw === 'opened' || item.isOpen === true || (wartezeit !== null && wartezeit >= 0);
+
+        // Badge Styling je nach Wartezeit
+        let badgeClass = 'badge-closed';
+        let badgeText = 'Geschlossen';
+        let borderStyle = '#95a5a6';
+
+        if (istGeoffnet && wartezeit !== null) {
+          const min = Number(wartezeit);
+          badgeText = `${min} min`;
+
+          if (min <= 15) {
+            badgeClass = 'badge-green';
+            borderStyle = '#2ecc71';
+          } else if (min <= 40) {
+            badgeClass = 'badge-yellow';
+            borderStyle = '#f39c12';
+          } else {
+            badgeClass = 'badge-red';
+            borderStyle = '#e74c3c';
+          }
+        }
+
+        const card = document.createElement('div');
+        card.className = 'ride-card';
+        card.style.borderLeftColor = borderStyle;
+        card.innerHTML = `
+          <div class="ride-name">${name}</div>
+          <div class="ride-meta">
+            <span class="status-text ${istGeoffnet ? 'status-open' : 'status-closed'}">
+              ${istGeoffnet ? '● Geöffnet' : '○ Geschlossen'}
+            </span>
+            <span class="time-badge ${badgeClass}">${badgeText}</span>
+          </div>
+        `;
+        grid.appendChild(card);
+      });
+    }
+
+    function zeigeFehler(msg) {
+      const loading = document.getElementById('loading');
+      loading.innerText = msg;
+      loading.className = 'error';
+    }
+
+    // Event-Listener
+    document.getElementById('searchInput').addEventListener('input', filterUndZeigeAttraktionen);
+    document.getElementById('sortSelect').addEventListener('change', filterUndZeigeAttraktionen);
+
+    // Initialisierung starten
+    initialisiereWartezeiten();
+  </script>
+</body>
+</html>
